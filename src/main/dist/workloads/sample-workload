@@ -1,0 +1,39 @@
+# Workload class to use
+workload=site.ycsb.workloads.CoreWorkload
+
+# The number of records in the dataset at the start of the workload.
+recordcount=1000
+
+# The number of operations to perform in the workload.
+operationcount=10000
+
+# Should reads read all fields (true) or just one (false).
+readallfields=true
+
+# What proportion of operations should be reads.
+readproportion=0.5
+
+# What proportion of operations should be updates.
+updateproportion=0.3
+
+# What proportion of operations should be scans.
+scanproportion=0
+
+# What proportion of operations should be inserts.
+insertproportion=0.2
+
+# What distribution should be used to select the records to operate
+# on – uniform, zipfian, hotspot, sequential, exponential or latest
+requestdistribution=zipfian
+
+# ..::NOTE::.. This is different from the CoreWorkload!
+# Represents the number of unique "metrics" or "keys" for time series.
+# E.g. "sys.cpu" may be a single field or "metric" while there may be many
+# time series sharing that key (perhaps a host tag with "web01" and "web02"
+# as options).
+fieldcount=1
+
+# Whether or not data should be validated during writes and reads. If
+# set then the data type is always a 64 bit signed integer and is the
+# hash code of the key, timestamp and tags.
+dataintegrity=false
