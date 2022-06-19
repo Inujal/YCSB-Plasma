@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class PlasmaStoreBinding extends KeyValueStore {
 
@@ -21,6 +22,7 @@ public class PlasmaStoreBinding extends KeyValueStore {
      * The client instance used for all operations.
      */
     private PlasmaClient client;
+    private ArrayList<byte[]> storedIDs = new ArrayList<>();
 
     /**
      * Initializes this binding instance and connects to the remote server.
@@ -78,6 +80,7 @@ public class PlasmaStoreBinding extends KeyValueStore {
                 byteBuffer.put(b);
             }
             client.seal(id);
+            storedIDs.add(id);
         } catch (final DuplicateObjectException e) {
             return Status.BAD_REQUEST;
         } catch (final Exception e) {
@@ -98,9 +101,13 @@ public class PlasmaStoreBinding extends KeyValueStore {
             final byte[] id = generateID(key);
             client.delete(id);
             while (client.contains(id)) {
+                if (!storedIDs.contains(id)) {
+                    return Status.BAD_REQUEST;
+                }
                 client.release(id);
                 client.delete(id);
             }
+            storedIDs.remove(id);
         } catch (final Exception e) {
             return Status.SERVICE_UNAVAILABLE;
         }
